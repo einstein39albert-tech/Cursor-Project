@@ -111,10 +111,12 @@ Before deploying to your own server:
 The repository now includes ready-to-use deployment helpers:
 
 - `deploy/nginx/uorms.conf` - Nginx reverse proxy sample
+- `deploy/apache/uorms.conf` - Apache reverse proxy sample
 - `deploy/systemd/uorms.service` - systemd service sample
 - `ecosystem.config.js` - PM2 process configuration
 - `scripts/deploy.sh` - basic Linux deployment helper
 - `scripts/backup.sh` - database and uploads backup helper
+- `scripts/reset-password.js` - secure CLI password reset helper
 
 ## Recommended deployment path on your server
 
@@ -163,6 +165,24 @@ The repository now includes ready-to-use deployment helpers:
 
 3. Put Nginx in front of it using `deploy/nginx/uorms.conf`
 
+### Option C: Apache reverse proxy
+
+If your server uses Apache instead of Nginx:
+
+1. Enable required modules:
+
+   ```bash
+   sudo a2enmod proxy proxy_http headers rewrite
+   ```
+
+2. Copy `deploy/apache/uorms.conf` into your Apache sites configuration
+3. Replace the example domain name
+4. Reload Apache:
+
+   ```bash
+   sudo systemctl reload apache2
+   ```
+
 ## Example production `.env`
 
 ```bash
@@ -190,6 +210,20 @@ DATABASE_PATH=data/uorms.sqlite
 - update organization settings in the dashboard
 - configure a cron job for `scripts/backup.sh`
 - verify `/health`
+
+## Change default passwords safely
+
+Do not edit the SQLite database manually. Use the included CLI helper:
+
+```bash
+npm run reset-password -- admin NewStrongPassword123
+```
+
+If you omit the password, a strong random one is generated and printed:
+
+```bash
+npm run reset-password -- admin
+```
 
 ## Recommended self-hosted deployment shape
 
