@@ -195,6 +195,7 @@ APP_SECRET=replace-this-with-a-long-random-secret
 COOKIE_NAME=uorms_session
 SESSION_TTL_DAYS=7
 DEFAULT_LOCALE=en
+AUTH_ENABLED=true
 TRUST_PROXY=true
 SECURE_COOKIES=true
 UPLOAD_DIR=src/public/uploads
@@ -206,6 +207,7 @@ DATABASE_PATH=data/uorms.sqlite
 - set the real domain name
 - enable HTTPS
 - set `APP_SECRET`
+- set `AUTH_ENABLED=true` for production
 - set `SECURE_COOKIES=true`
 - set `TRUST_PROXY=true`
 - change all seeded passwords
@@ -225,6 +227,20 @@ If you omit the password, a strong random one is generated and printed:
 
 ```bash
 npm run reset-password -- admin
+```
+
+## Development mode without login blocking
+
+For review and development, the project can run with authentication bypassed:
+
+```bash
+AUTH_ENABLED=false
+```
+
+That is useful while UI modules are still being reviewed. For real deployment, set:
+
+```bash
+AUTH_ENABLED=true
 ```
 
 ## Recommended self-hosted deployment shape

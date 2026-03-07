@@ -9,6 +9,14 @@ const { logAction } = require("../services/auditService");
 const router = express.Router();
 
 router.get("/login", (req, res) => {
+  if (!env.authEnabled) {
+    setFlash(res, {
+      type: "success",
+      message: "Authentication is disabled in development mode.",
+    });
+    return res.redirect("/dashboard");
+  }
+
   if (req.currentUser) {
     return res.redirect("/dashboard");
   }
@@ -19,6 +27,14 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", (req, res) => {
+  if (!env.authEnabled) {
+    setFlash(res, {
+      type: "success",
+      message: "Authentication is currently bypassed in development mode.",
+    });
+    return res.redirect("/dashboard");
+  }
+
   const username = String(req.body.username || "").trim();
   const password = String(req.body.password || "");
   const locale = String(req.body.locale || env.defaultLocale);
@@ -65,6 +81,14 @@ router.post("/login", (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
+  if (!env.authEnabled) {
+    setFlash(res, {
+      type: "success",
+      message: "Authentication is disabled in development mode.",
+    });
+    return res.redirect("/dashboard");
+  }
+
   const sessionId = req.cookies?.[env.cookieName];
   if (sessionId) {
     destroySession(sessionId);

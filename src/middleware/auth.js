@@ -71,6 +71,47 @@ function consumeExpiredSessions() {
 }
 
 function loadCurrentUser(req, res, next) {
+  if (!env.authEnabled) {
+    const developmentUser = db
+      .prepare(
+        `
+        SELECT id, full_name, email, username, role, branch_id, branch_level, locale
+        FROM users
+        WHERE is_active = 1
+        ORDER BY CASE WHEN username = 'admin' THEN 0 ELSE 1 END, id ASC
+        LIMIT 1
+      `
+      )
+      .get();
+
+    req.currentSession = {
+      id: "development-bypass-session",
+      csrf_token: "development-bypass-token",
+    };
+    req.currentUser = developmentUser
+      ? {
+          id: developmentUser.id,
+          fullName: developmentUser.full_name,
+          email: developmentUser.email,
+          username: developmentUser.username,
+          role: developmentUser.role,
+          branchId: developmentUser.branch_id,
+          branchLevel: developmentUser.branch_level,
+          locale: developmentUser.locale,
+        }
+      : {
+          id: 0,
+          fullName: "Development Admin",
+          email: "dev@example.local",
+          username: "devadmin",
+          role: "system_admin",
+          branchId: null,
+          branchLevel: null,
+          locale: env.defaultLocale,
+        };
+    return next();
+  }
+
   consumeExpiredSessions();
 
   const sessionId = req.cookies?.[env.cookieName];
@@ -115,6 +156,10 @@ function loadCurrentUser(req, res, next) {
 }
 
 function requireAuth(req, res, next) {
+  if (!env.authEnabled) {
+    return next();
+  }
+
   if (!req.currentUser) {
     return res.redirect("/login");
   }
@@ -124,6 +169,10 @@ function requireAuth(req, res, next) {
 
 function requirePermission(permission) {
   return function permissionGuard(req, res, next) {
+    if (!env.authEnabled) {
+      return next();
+    }
+
     if (!req.currentUser) {
       return res.redirect("/login");
     }
@@ -148,6 +197,10 @@ function requirePermission(permission) {
 }
 
 function verifyCsrf(req, res, next) {
+  if (!env.authEnabled) {
+    return next();
+  }
+
   if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") {
     return next();
   }

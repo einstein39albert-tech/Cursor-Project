@@ -8,6 +8,8 @@ function getEnv(name, fallback) {
   return value === undefined || value === "" ? fallback : value;
 }
 
+const nodeEnv = getEnv("NODE_ENV", "development");
+
 const env = {
   rootDir,
   port: Number.parseInt(getEnv("PORT", "3000"), 10),
@@ -19,7 +21,8 @@ const env = {
   cookieName: getEnv("COOKIE_NAME", "uorms_session"),
   sessionTtlDays: Number.parseInt(getEnv("SESSION_TTL_DAYS", "7"), 10),
   defaultLocale: getEnv("DEFAULT_LOCALE", "en"),
-  nodeEnv: getEnv("NODE_ENV", "development"),
+  nodeEnv,
+  authEnabled: getEnv("AUTH_ENABLED", nodeEnv === "production" ? "true" : "false") === "true",
   appSecret: getEnv(
     "APP_SECRET",
     "development-secret-change-this-before-deploying"

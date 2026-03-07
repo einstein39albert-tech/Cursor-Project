@@ -5,6 +5,7 @@ const fs = require("node:fs");
 process.env.NODE_ENV = "test";
 process.env.DATABASE_PATH = "/tmp/uorms-test.sqlite";
 process.env.UPLOAD_DIR = "/tmp/uorms-test-uploads";
+process.env.AUTH_ENABLED = "true";
 
 fs.rmSync(process.env.DATABASE_PATH, { force: true });
 fs.rmSync(process.env.UPLOAD_DIR, { recursive: true, force: true });
