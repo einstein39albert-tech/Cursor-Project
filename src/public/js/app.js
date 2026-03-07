@@ -40,4 +40,21 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   }
+
+  const demoButtons = document.querySelectorAll(".demo-account-btn");
+  if (demoButtons.length) {
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+
+    demoButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (usernameInput) {
+          usernameInput.value = button.dataset.username || "";
+        }
+        if (passwordInput) {
+          passwordInput.value = button.dataset.password || "";
+        }
+      });
+    });
+  }
 });
