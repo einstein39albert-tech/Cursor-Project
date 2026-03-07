@@ -1,0 +1,95 @@
+<%- include("../partials/dashboard-start") %>
+
+<section class="page-header">
+  <div>
+    <h1><%= t("nav.settings") %></h1>
+    <p>Control the organization identity, contact information, and reporting coefficient rules.</p>
+  </div>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Organization settings</h2>
+    <form action="/dashboard/settings/organization" method="post" class="stack-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div class="form-row">
+        <label>Name</label>
+        <input name="name" value="<%= organization.name || app.name %>" />
+      </div>
+      <div class="inline-grid">
+        <div class="form-row">
+          <label>Short name</label>
+          <input name="shortName" value="<%= organization.shortName || app.shortName %>" />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input name="email" type="email" value="<%= organization.email || app.email %>" />
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Description</label>
+        <textarea name="description" rows="3"><%= organization.description || app.description %></textarea>
+      </div>
+      <div class="inline-grid">
+        <div class="form-row">
+          <label>Address</label>
+          <input name="address" value="<%= organization.address || app.address %>" />
+        </div>
+        <div class="form-row">
+          <label>Phone</label>
+          <input name="phone" value="<%= organization.phone || app.phone %>" />
+        </div>
+      </div>
+      <div class="inline-grid">
+        <div class="form-row">
+          <label>Primary color</label>
+          <input type="color" name="primaryColor" value="<%= organization.primaryColor || app.primaryColor %>" />
+        </div>
+        <div class="form-row">
+          <label>Accent color</label>
+          <input type="color" name="accentColor" value="<%= organization.accentColor || app.accentColor %>" />
+        </div>
+      </div>
+      <button class="button button-primary" type="submit"><%= t("common.save") %></button>
+    </form>
+  </article>
+
+  <article class="content-card">
+    <h2>Coefficient settings</h2>
+    <form action="/dashboard/settings/coefficients" method="post" class="stack-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div class="form-row">
+        <label>Daily (7 comma-separated values)</label>
+        <input name="daily" value="<%= coefficients.daily.join(', ') %>" />
+      </div>
+      <div class="form-row">
+        <label>Weekly (4 comma-separated values)</label>
+        <input name="weekly" value="<%= coefficients.weekly.join(', ') %>" />
+      </div>
+      <div class="form-row">
+        <label>Monthly (3 comma-separated values)</label>
+        <input name="monthly" value="<%= coefficients.monthly.join(', ') %>" />
+      </div>
+      <div class="form-row">
+        <label>Quarterly (4 comma-separated values)</label>
+        <input name="quarterly" value="<%= coefficients.quarterly.join(', ') %>" />
+      </div>
+      <button class="button button-primary" type="submit"><%= t("common.save") %></button>
+    </form>
+  </article>
+</section>
+
+<section class="content-card">
+  <h2>Recent audit activity</h2>
+  <ul class="activity-list">
+    <% recentActivity.forEach((item) => { %>
+      <li>
+        <strong><%= item.action %></strong>
+        <span><%= item.user_name || "System" %></span>
+        <small><%= item.created_at %></small>
+      </li>
+    <% }) %>
+  </ul>
+</section>
+
+<%- include("../partials/dashboard-end") %>

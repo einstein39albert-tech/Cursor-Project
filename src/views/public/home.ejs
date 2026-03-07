@@ -1,0 +1,89 @@
+<%- include("../partials/head") %>
+<%- include("../partials/public-nav") %>
+
+<main>
+  <%- include("../partials/flash") %>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">English + አማርኛ · Future multilingual ready</span>
+        <h1><%= t("home.tagline") %></h1>
+        <p class="hero-copy"><%= t("home.subtitle") %></p>
+        <div class="hero-actions">
+          <% if (currentUser) { %>
+            <a class="button button-primary" href="/dashboard"><%= t("home.cta.primary") %></a>
+          <% } else { %>
+            <a class="button button-primary" href="/login"><%= t("home.cta.secondary") %></a>
+          <% } %>
+          <a class="button button-secondary" href="/features"><%= t("nav.features") %></a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="calendar-card">
+          <h3><%= t("dashboard.calendar") %></h3>
+          <div class="calendar-grid">
+            <div>
+              <span class="label">Gregorian</span>
+              <strong><%= calendar.gregorianDate %></strong>
+            </div>
+            <div>
+              <span class="label">Ethiopic</span>
+              <strong><%= calendar.ethiopianDate %></strong>
+            </div>
+            <div>
+              <span class="label">EAT</span>
+              <strong><%= calendar.eastAfricaTime %></strong>
+            </div>
+            <div>
+              <span class="label">Fiscal year</span>
+              <strong><%= calendar.fiscalYear %></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card"><span><%= t("home.hero.kpi1") %></span><strong><%= stats.users %></strong></div>
+        <div class="stat-card"><span><%= t("home.hero.kpi2") %></span><strong><%= stats.reports %></strong></div>
+        <div class="stat-card"><span><%= t("home.hero.kpi3") %></span><strong><%= stats.branches %></strong></div>
+        <div class="stat-card"><span><%= t("home.hero.kpi4") %></span><strong><%= stats.files %></strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Merged platform modules</h2>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <i class="fa-solid fa-sitemap"></i>
+          <h3>Operational Branches</h3>
+          <p>Hierarchy, staffing, target plans, and focal-point contacts adapted from Website A.</p>
+        </article>
+        <article class="feature-card">
+          <i class="fa-solid fa-chart-column"></i>
+          <h3>Reports and Analytics</h3>
+          <p>Indicator templates, efficiency tracking, and chart-ready reporting adapted from Website B.</p>
+        </article>
+        <article class="feature-card">
+          <i class="fa-solid fa-comments"></i>
+          <h3>Internal Messaging</h3>
+          <p>Secure internal and vertical communication workflows with confirmation states.</p>
+        </article>
+        <article class="feature-card">
+          <i class="fa-solid fa-user-shield"></i>
+          <h3>Secure Access Control</h3>
+          <p>Administrator-managed accounts, audit logging, rate limiting, and server-side role enforcement.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include("../partials/footer") %>

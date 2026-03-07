@@ -1,0 +1,79 @@
+<%- include("../partials/dashboard-start") %>
+
+<section class="page-header">
+  <div>
+    <h1><%= t("nav.messages") %></h1>
+    <p>Internal and vertical communication with confirmation workflow.</p>
+  </div>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Compose message</h2>
+    <% if (hasPermission("manage_messages")) { %>
+      <form action="/dashboard/messages" method="post" class="stack-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="form-row">
+          <label>Channel</label>
+          <select name="channel">
+            <option value="internal">Internal</option>
+            <option value="vertical">Vertical</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Target branch</label>
+          <select name="target_branch_id">
+            <option value="">General</option>
+            <% branches.forEach((branch) => { %>
+              <option value="<%= branch.id %>"><%= branch.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Target role</label>
+          <select name="target_role">
+            <option value="">Any role</option>
+            <option value="main_admin">Main Admin</option>
+            <option value="manager">Manager</option>
+            <option value="sub_manager">Sub-Manager</option>
+            <option value="director">Director</option>
+            <option value="user">User</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Message</label>
+          <textarea name="content" rows="5" required></textarea>
+        </div>
+        <button class="button button-primary" type="submit">Send message</button>
+      </form>
+    <% } else { %>
+      <p>You do not have permission to send operational messages.</p>
+    <% } %>
+  </article>
+
+  <article class="content-card">
+    <h2>Message stream</h2>
+    <div class="card-list">
+      <% messages.forEach((message) => { %>
+        <div class="mini-card">
+          <div>
+            <strong><%= message.sender_name || "Unknown sender" %></strong>
+            <p><%= message.channel %> · <%= message.target_branch_name || "All branches" %> · <%= message.status %></p>
+            <p><%= message.content %></p>
+          </div>
+          <% if (message.status === "pending" && hasPermission("manage_messages")) { %>
+            <form action="/dashboard/messages/<%= message.id %>/confirm" method="post">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <button class="button button-secondary button-small" type="submit"><%= t("common.confirm") %></button>
+            </form>
+          <% } %>
+        </div>
+      <% }) %>
+      <% if (!messages.length) { %>
+        <p class="muted">No messages yet.</p>
+      <% } %>
+    </div>
+  </article>
+</section>
+
+<%- include("../partials/dashboard-end") %>

@@ -1,0 +1,20 @@
+<%- include("../partials/head") %>
+<%- include("../partials/public-nav") %>
+
+<main class="section">
+  <div class="container narrow">
+    <%- include("../partials/flash") %>
+    <h1 class="section-title"><%= t("nav.contact") %></h1>
+    <div class="content-card">
+      <p>This deployment can be tailored to your organization once the final production details are set.</p>
+      <dl class="detail-list">
+        <div><dt>Name</dt><dd><%= organization.name || app.name %></dd></div>
+        <div><dt>Address</dt><dd><%= organization.address || app.address || "Addis Ababa, Ethiopia" %></dd></div>
+        <div><dt>Email</dt><dd><%= organization.email || app.email || "info@example.gov.et" %></dd></div>
+        <div><dt>Phone</dt><dd><%= organization.phone || app.phone || "+251-000-000-000" %></dd></div>
+      </dl>
+    </div>
+  </div>
+</main>
+
+<%- include("../partials/footer") %>

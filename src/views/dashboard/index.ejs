@@ -1,0 +1,84 @@
+<%- include("../partials/dashboard-start") %>
+
+<section class="page-header">
+  <div>
+    <h1><%= t("dashboard.welcome") %>, <%= currentUser.fullName %></h1>
+    <p>Unified overview of branches, files, profiles, reports, and recent system activity.</p>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <div class="stat-card"><span>Branches</span><strong><%= stats.branches %></strong></div>
+  <div class="stat-card"><span>Files</span><strong><%= stats.files %></strong></div>
+  <div class="stat-card"><span>Messages</span><strong><%= stats.messages %></strong></div>
+  <div class="stat-card"><span>Users</span><strong><%= stats.users %></strong></div>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Calendar and fiscal context</h2>
+    <div class="calendar-grid">
+      <div><span class="label">Gregorian</span><strong><%= calendar.gregorianDate %></strong></div>
+      <div><span class="label">Ethiopic</span><strong><%= calendar.ethiopianDate %></strong></div>
+      <div><span class="label">East Africa Time</span><strong><%= calendar.eastAfricaTime %></strong></div>
+      <div><span class="label">Fiscal year</span><strong><%= calendar.fiscalYear %></strong></div>
+    </div>
+  </article>
+
+  <article class="content-card">
+    <h2>Recent activity</h2>
+    <ul class="activity-list">
+      <% recentActivity.forEach((item) => { %>
+        <li>
+          <strong><%= item.action %></strong>
+          <span><%= item.user_name || "System" %></span>
+          <small><%= item.created_at %></small>
+        </li>
+      <% }) %>
+      <% if (!recentActivity.length) { %>
+        <li>No audit activity yet.</li>
+      <% } %>
+    </ul>
+  </article>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Branch snapshot</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Level</th>
+          <th>Staff</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% branches.slice(0, 6).forEach((branch) => { %>
+          <tr>
+            <td><%= branch.name %></td>
+            <td><%= branch.level %></td>
+            <td><%= branch.staff_count %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </article>
+
+  <article class="content-card">
+    <h2>Reporting modules</h2>
+    <ul class="module-list">
+      <% reports.forEach((report) => { %>
+        <li>
+          <strong><%= report.name %></strong>
+          <p><%= report.description %></p>
+        </li>
+      <% }) %>
+      <% if (!reports.length) { %>
+        <li>No report templates available.</li>
+      <% } %>
+    </ul>
+  </article>
+</section>
+
+<%- include("../partials/dashboard-end") %>

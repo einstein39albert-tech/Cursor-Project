@@ -1,0 +1,54 @@
+<%- include("../partials/head") %>
+<%- include("../partials/public-nav") %>
+
+<main class="section">
+  <div class="container narrow">
+    <%- include("../partials/flash") %>
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="brand-logo large"><%= app.shortName %></div>
+        <h1><%= t("auth.title") %></h1>
+        <p><%= t("auth.roleHelp") %></p>
+      </div>
+
+      <form action="/login" method="post" class="auth-form">
+        <div class="form-row">
+          <label for="username"><%= t("auth.username") %></label>
+          <input id="username" name="username" type="text" required />
+        </div>
+        <div class="form-row">
+          <label for="password"><%= t("auth.password") %></label>
+          <input id="password" name="password" type="password" required />
+        </div>
+        <div class="form-row">
+          <label for="locale"><%= t("auth.language") %></label>
+          <select id="locale" name="locale">
+            <% languages.forEach((language) => { %>
+              <option value="<%= language.code %>" <%= language.code === locale ? "selected" : "" %>>
+                <%= language.label %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <button type="submit" class="button button-primary button-full">
+          <%= t("auth.submit") %>
+        </button>
+      </form>
+
+      <div class="demo-note">
+        <strong>Seeded internal accounts:</strong>
+        <ul>
+          <li>admin / admin123</li>
+          <li>mainadmin / main123</li>
+          <li>manager / manager123</li>
+          <li>submanager / sub123</li>
+          <li>director / director123</li>
+          <li>user / user123</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include("../partials/footer") %>

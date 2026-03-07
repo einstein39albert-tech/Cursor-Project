@@ -1,0 +1,105 @@
+<%- include("../partials/dashboard-start") %>
+
+<section class="page-header">
+  <div>
+    <h1><%= t("nav.users") %></h1>
+    <p>Create and manage internal accounts. Public self-signup is intentionally disabled by default.</p>
+  </div>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Create internal user</h2>
+    <form action="/dashboard/users" method="post" class="stack-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div class="form-row">
+        <label>Full name</label>
+        <input name="full_name" required />
+      </div>
+      <div class="inline-grid">
+        <div class="form-row">
+          <label>Email</label>
+          <input name="email" type="email" required />
+        </div>
+        <div class="form-row">
+          <label>Username</label>
+          <input name="username" required />
+        </div>
+      </div>
+      <div class="inline-grid">
+        <div class="form-row">
+          <label>Password</label>
+          <input name="password" type="password" minlength="8" required />
+        </div>
+        <div class="form-row">
+          <label>Role</label>
+          <select name="role">
+            <option value="main_admin">Main Admin</option>
+            <option value="manager">Manager</option>
+            <option value="sub_manager">Sub-Manager</option>
+            <option value="director">Director</option>
+            <option value="user">User</option>
+          </select>
+        </div>
+      </div>
+      <div class="inline-grid">
+        <div class="form-row">
+          <label>Branch</label>
+          <select name="branch_id">
+            <option value="">No branch</option>
+            <% branches.forEach((branch) => { %>
+              <option value="<%= branch.id %>"><%= branch.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Branch level</label>
+          <select name="branch_level">
+            <option value="">None</option>
+            <option value="national">National</option>
+            <option value="regional">Regional</option>
+            <option value="zonal">Zonal</option>
+            <option value="district">District</option>
+            <option value="local">Local</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Locale</label>
+        <select name="locale">
+          <option value="en">English</option>
+          <option value="am">አማርኛ</option>
+        </select>
+      </div>
+      <button class="button button-primary" type="submit">Create user</button>
+    </form>
+  </article>
+
+  <article class="content-card">
+    <h2>Current users</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Branch</th>
+          <th>Locale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach((user) => { %>
+          <tr>
+            <td><%= user.full_name %></td>
+            <td><%= user.username %></td>
+            <td><%= user.role %></td>
+            <td><%= user.branch_name || "-" %></td>
+            <td><%= user.locale %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </article>
+</section>
+
+<%- include("../partials/dashboard-end") %>

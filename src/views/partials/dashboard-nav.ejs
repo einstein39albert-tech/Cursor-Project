@@ -1,0 +1,38 @@
+<aside class="dashboard-sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo"><%= app.shortName %></div>
+    <div>
+      <div class="brand-name"><%= app.name %></div>
+      <div class="brand-subtitle"><%= currentUser.role.replace(/_/g, " ") %></div>
+    </div>
+  </div>
+
+  <nav class="sidebar-links">
+    <a href="/dashboard"><i class="fa-solid fa-gauge"></i> <%= t("nav.dashboard") %></a>
+    <a href="/dashboard/branches"><i class="fa-solid fa-sitemap"></i> <%= t("nav.branches") %></a>
+    <a href="/dashboard/files"><i class="fa-solid fa-folder-open"></i> <%= t("nav.files") %></a>
+    <a href="/dashboard/messages"><i class="fa-solid fa-comments"></i> <%= t("nav.messages") %></a>
+    <a href="/dashboard/profiles"><i class="fa-solid fa-id-card"></i> <%= t("nav.profiles") %></a>
+    <a href="/dashboard/reports"><i class="fa-solid fa-chart-line"></i> <%= t("nav.reports") %></a>
+    <% if (hasPermission("manage_users")) { %>
+      <a href="/dashboard/users"><i class="fa-solid fa-users-gear"></i> <%= t("nav.users") %></a>
+    <% } %>
+    <% if (hasPermission("manage_settings")) { %>
+      <a href="/dashboard/settings"><i class="fa-solid fa-gear"></i> <%= t("nav.settings") %></a>
+    <% } %>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="language-list">
+      <% languages.forEach((language) => { %>
+        <a href="?lang=<%= language.code %>"><%= language.label %></a>
+      <% }) %>
+    </div>
+    <form action="/logout" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button type="submit" class="ghost-button">
+        <i class="fa-solid fa-right-from-bracket"></i> <%= t("nav.logout") %>
+      </button>
+    </form>
+  </div>
+</aside>

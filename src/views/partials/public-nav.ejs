@@ -1,0 +1,21 @@
+<header class="site-header">
+  <div class="container topbar">
+    <div class="brand-block">
+      <div class="brand-logo"><%= app.shortName %></div>
+      <div>
+        <div class="brand-name"><%= app.name %></div>
+        <div class="brand-subtitle"><%= app.description %></div>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="/"><%= t("nav.home") %></a>
+      <a href="/features"><%= t("nav.features") %></a>
+      <a href="/contact"><%= t("nav.contact") %></a>
+      <% if (currentUser) { %>
+        <a href="/dashboard"><%= t("nav.dashboard") %></a>
+      <% } else { %>
+        <a href="/login"><%= t("nav.login") %></a>
+      <% } %>
+    </nav>
+  </div>
+</header>

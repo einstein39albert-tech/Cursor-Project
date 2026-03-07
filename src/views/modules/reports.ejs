@@ -1,0 +1,140 @@
+<%- include("../partials/dashboard-start") %>
+
+<section class="page-header">
+  <div>
+    <h1><%= t("nav.reports") %></h1>
+    <p>Manual indicator templates, target planning, performance tracking, and analytics adapted from Website B.</p>
+  </div>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Create template</h2>
+    <% if (hasPermission("manage_reports")) { %>
+      <form action="/dashboard/reports/templates" method="post" class="stack-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="form-row">
+          <label>Name</label>
+          <input name="name" required />
+        </div>
+        <div class="form-row">
+          <label>Description</label>
+          <textarea name="description" rows="3"></textarea>
+        </div>
+        <button class="button button-primary" type="submit">Create template</button>
+      </form>
+    <% } else { %>
+      <p>Your role can view templates but cannot create them.</p>
+    <% } %>
+
+    <h2 class="section-gap">Coefficient settings</h2>
+    <ul class="detail-list compact">
+      <div><dt>Daily</dt><dd><%= coefficients.daily.join(", ") %></dd></div>
+      <div><dt>Weekly</dt><dd><%= coefficients.weekly.join(", ") %></dd></div>
+      <div><dt>Monthly</dt><dd><%= coefficients.monthly.join(", ") %></dd></div>
+      <div><dt>Quarterly</dt><dd><%= coefficients.quarterly.join(", ") %></dd></div>
+    </ul>
+  </article>
+
+  <article class="content-card">
+    <h2>Reporting chart</h2>
+    <canvas id="reportChart" height="220"></canvas>
+    <p class="muted">Today performance vs yearly target for the first available report template.</p>
+  </article>
+</section>
+
+<section class="content-card">
+  <h2>Templates and indicators</h2>
+  <div class="card-list">
+    <% templates.forEach((template) => { %>
+      <div class="profile-block">
+        <div class="mini-card">
+          <div>
+            <strong><%= template.name %></strong>
+            <p><%= template.description %></p>
+          </div>
+        </div>
+
+        <% if (hasPermission("manage_reports")) { %>
+          <form action="/dashboard/reports/indicators" method="post" class="stack-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <input type="hidden" name="template_id" value="<%= template.id %>" />
+            <div class="inline-grid">
+              <div class="form-row">
+                <label>Indicator title</label>
+                <input name="title" required />
+              </div>
+              <div class="form-row">
+                <label>Level</label>
+                <input type="number" name="level" min="0" max="5" value="1" />
+              </div>
+              <div class="form-row">
+                <label>Parent indicator</label>
+                <select name="parent_id">
+                  <option value="">No parent</option>
+                  <% template.indicators.forEach((indicator) => { %>
+                    <option value="<%= indicator.id %>"><%= indicator.title %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Yearly target</label>
+                <input type="number" name="yearly_target" step="0.01" value="0" />
+              </div>
+            </div>
+            <button class="button button-secondary button-small" type="submit">Add indicator</button>
+          </form>
+        <% } %>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Level</th>
+                <th>Yearly target</th>
+                <th>Today target</th>
+                <th>Today performance</th>
+                <th>Today efficiency</th>
+                <th>Yearly efficiency</th>
+                <th>Update</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% template.indicators.forEach((indicator) => { %>
+                <tr>
+                  <td><%= indicator.title %></td>
+                  <td><%= indicator.level %></td>
+                  <td><%= indicator.metrics.yearlyTarget %></td>
+                  <td><%= indicator.metrics.todayTarget %></td>
+                  <td><%= indicator.metrics.todayPerformance %></td>
+                  <td><%= indicator.metrics.todayEfficiency %>%</td>
+                  <td><%= indicator.metrics.yearlyEfficiency %>%</td>
+                  <td>
+                    <% if (hasPermission("manage_reports")) { %>
+                      <form action="/dashboard/reports/indicators/<%= indicator.id %>/update" method="post" class="inline-form">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        <input type="number" name="yearly_target" step="0.01" value="<%= indicator.yearly_target %>" />
+                        <input type="number" name="today_performance" step="0.01" value="<%= indicator.today_performance %>" />
+                        <button class="button button-primary button-small" type="submit"><%= t("common.update") %></button>
+                      </form>
+                    <% } else { %>
+                      <span class="muted">Read only</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  window.reportChartData = <%- reportChartData %>;
+</script>
+
+<%- include("../partials/dashboard-end") %>

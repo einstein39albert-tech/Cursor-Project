@@ -1,0 +1,15 @@
+<%- include("../partials/head") %>
+<%- include("../partials/public-nav") %>
+
+<main class="section">
+  <div class="container narrow">
+    <div class="content-card error-card">
+      <div class="error-code"><%= statusCode %></div>
+      <h1><%= pageTitle %></h1>
+      <p><%= message %></p>
+      <a href="/" class="button button-primary">Return home</a>
+    </div>
+  </div>
+</main>
+
+<%- include("../partials/footer") %>

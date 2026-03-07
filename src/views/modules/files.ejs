@@ -1,0 +1,58 @@
+<%- include("../partials/dashboard-start") %>
+
+<section class="page-header">
+  <div>
+    <h1><%= t("nav.files") %></h1>
+    <p>Upload and govern operational documents, supporting evidence, and media attachments.</p>
+  </div>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Upload file</h2>
+    <% if (hasPermission("manage_files")) { %>
+      <form action="/dashboard/files/upload" method="post" enctype="multipart/form-data" class="stack-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="upload-box">
+          <label for="uploaded_file">Choose a document, image, or video file</label>
+          <input id="uploaded_file" name="uploaded_file" type="file" required />
+        </div>
+        <button type="submit" class="button button-primary"><%= t("common.upload") %></button>
+      </form>
+    <% } else { %>
+      <p>Your role can view uploaded files but cannot upload new ones.</p>
+    <% } %>
+  </article>
+
+  <article class="content-card">
+    <h2>Stored files</h2>
+    <div class="card-list">
+      <% files.forEach((file) => { %>
+        <div class="mini-card">
+          <div>
+            <strong><%= file.original_name %></strong>
+            <p><%= file.category %> · <%= file.formattedSize %> · <%= file.uploaded_by_name || "Unknown" %></p>
+          </div>
+          <div class="inline-actions">
+            <a class="button button-secondary button-small" href="/uploads/<%= file.stored_name %>" target="_blank"><%= t("common.download") %></a>
+            <% if (hasPermission("manage_files")) { %>
+              <form action="/dashboard/files/<%= file.id %>/pin" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="button button-secondary button-small"><%= file.pinned ? "Unpin" : "Pin" %></button>
+              </form>
+              <form action="/dashboard/files/<%= file.id %>/delete" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="button button-danger button-small"><%= t("common.delete") %></button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+      <% if (!files.length) { %>
+        <p class="muted">No files uploaded yet.</p>
+      <% } %>
+    </div>
+  </article>
+</section>
+
+<%- include("../partials/dashboard-end") %>

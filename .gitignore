@@ -1,0 +1,7 @@
+node_modules/
+.env
+data/
+src/public/uploads/*
+!src/public/uploads/.gitkeep
+coverage/
+npm-debug.log*

@@ -1,0 +1,119 @@
+<%- include("../partials/dashboard-start") %>
+
+<section class="page-header">
+  <div>
+    <h1><%= t("nav.profiles") %></h1>
+    <p>Create structured registries such as staff, projects, assets, or compliance records.</p>
+  </div>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Create profile type</h2>
+    <% if (hasPermission("manage_profiles")) { %>
+      <form action="/dashboard/profiles/types" method="post" class="stack-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="form-row">
+          <label>Name</label>
+          <input name="name" required />
+        </div>
+        <div class="form-row">
+          <label>Description</label>
+          <textarea name="description" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <label>Initial fields (comma separated)</label>
+          <input name="fields" placeholder="Name, Employee ID, Status" />
+        </div>
+        <button class="button button-primary" type="submit"><%= t("common.create") %></button>
+      </form>
+    <% } else { %>
+      <p>Your role can view profiles but cannot create new profile structures.</p>
+    <% } %>
+  </article>
+
+  <article class="content-card">
+    <h2>Existing profile types</h2>
+    <div class="card-list">
+      <% profileTypes.forEach((profileType) => { %>
+        <div class="profile-block">
+          <div class="mini-card">
+            <div>
+              <strong><%= profileType.name %></strong>
+              <p><%= profileType.description || "No description" %></p>
+              <p><%= profileType.entry_count %> entries · <%= profileType.fields.length %> fields</p>
+            </div>
+          </div>
+
+          <div class="inline-grid">
+            <div class="sub-card">
+              <h3>Add field</h3>
+              <% if (hasPermission("manage_profiles")) { %>
+                <form action="/dashboard/profiles/types/<%= profileType.id %>/fields" method="post" class="inline-form">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <input name="field_name" placeholder="Field name" required />
+                  <button class="button button-secondary button-small" type="submit">Add</button>
+                </form>
+              <% } %>
+              <ul class="chip-list">
+                <% profileType.fields.forEach((field) => { %>
+                  <li><%= field.name %></li>
+                <% }) %>
+              </ul>
+            </div>
+
+            <div class="sub-card">
+              <h3>Add entry</h3>
+              <% if (hasPermission("manage_profiles")) { %>
+                <form action="/dashboard/profiles/types/<%= profileType.id %>/entries" method="post" class="stack-form">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <% profileType.fields.forEach((field) => { %>
+                    <div class="form-row">
+                      <label><%= field.name %></label>
+                      <input name="field_<%= field.id %>" />
+                    </div>
+                  <% }) %>
+                  <button class="button button-primary button-small" type="submit">Save entry</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <h3>Recent entries</h3>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <% profileType.fields.forEach((field) => { %>
+                      <th><%= field.name %></th>
+                    <% }) %>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% profileType.entries.forEach((entry) => { %>
+                    <tr>
+                      <% profileType.fields.forEach((field) => { %>
+                        <td><%= entry.data[field.name] || "-" %></td>
+                      <% }) %>
+                    </tr>
+                  <% }) %>
+                  <% if (!profileType.entries.length) { %>
+                    <tr>
+                      <td colspan="<%= profileType.fields.length || 1 %>">No entries yet.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+      <% if (!profileTypes.length) { %>
+        <p class="muted">No profile types created yet.</p>
+      <% } %>
+    </div>
+  </article>
+</section>
+
+<%- include("../partials/dashboard-end") %>

@@ -1,0 +1,45 @@
+{
+  "name": "uorms",
+  "version": "1.0.0",
+  "description": "Unified Operations, Reporting & Management System",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test tests/**/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/einstein39albert-tech/Cursor-Project.git"
+  },
+  "keywords": [
+    "government",
+    "enterprise",
+    "dashboard",
+    "reporting",
+    "management"
+  ],
+  "author": "Cursor Cloud Agent",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/einstein39albert-tech/Cursor-Project/issues"
+  },
+  "homepage": "https://github.com/einstein39albert-tech/Cursor-Project#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.6.2",
+    "cookie-parser": "^1.4.7",
+    "dayjs": "^1.11.19",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.0",
+    "express-validator": "^7.3.1",
+    "helmet": "^8.1.0",
+    "method-override": "^3.0.0",
+    "multer": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
+  }
+}

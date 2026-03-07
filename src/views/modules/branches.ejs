@@ -1,0 +1,124 @@
+<%- include("../partials/dashboard-start") %>
+
+<section class="page-header">
+  <div>
+    <h1><%= t("nav.branches") %></h1>
+    <p>Manage the organizational hierarchy, staffing targets, and contact points.</p>
+  </div>
+</section>
+
+<section class="grid-two">
+  <article class="content-card">
+    <h2>Create branch</h2>
+    <% if (hasPermission("manage_branches")) { %>
+      <form action="/dashboard/branches" method="post" class="stack-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="form-row">
+          <label>Name</label>
+          <input name="name" required />
+        </div>
+        <div class="form-row">
+          <label>Level</label>
+          <select name="level">
+            <option value="national">National</option>
+            <option value="regional">Regional</option>
+            <option value="zonal">Zonal</option>
+            <option value="district">District</option>
+            <option value="local">Local</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Parent branch</label>
+          <select name="parent_id">
+            <option value="">No parent</option>
+            <% branches.forEach((branch) => { %>
+              <option value="<%= branch.id %>"><%= branch.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-row inline-grid">
+          <div>
+            <label>Staff count</label>
+            <input name="staff_count" type="number" min="0" value="0" />
+          </div>
+          <div>
+            <label>Target plan</label>
+            <input name="target_plan" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Percentage</label>
+            <input name="percentage" type="number" min="0" step="0.01" value="100" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Contact name</label>
+          <input name="contact_name" />
+        </div>
+        <div class="form-row">
+          <label>Contact role</label>
+          <input name="contact_job_title" />
+        </div>
+        <div class="form-row">
+          <label>Contact address</label>
+          <input name="contact_address" />
+        </div>
+        <div class="form-row inline-grid">
+          <div>
+            <label>Phone</label>
+            <input name="contact_phone" />
+          </div>
+          <div>
+            <label>Email</label>
+            <input name="contact_email" type="email" />
+          </div>
+          <div>
+            <label>Telegram</label>
+            <input name="contact_telegram" />
+          </div>
+        </div>
+        <button class="button button-primary" type="submit"><%= t("common.create") %></button>
+      </form>
+    <% } else { %>
+      <p>You can view branches but cannot create or change them with your current role.</p>
+    <% } %>
+  </article>
+
+  <article class="content-card">
+    <h2>Hierarchy</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Level</th>
+          <th>Parent</th>
+          <th>Staff</th>
+          <th>Target</th>
+          <th><%= t("common.actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% branches.forEach((branch) => { %>
+          <tr>
+            <td><%= branch.name %></td>
+            <td><%= branch.level %></td>
+            <td><%= branch.parent_name || "-" %></td>
+            <td><%= branch.staff_count %></td>
+            <td><%= branch.target_plan %></td>
+            <td>
+              <% if (hasPermission("manage_branches")) { %>
+                <form action="/dashboard/branches/<%= branch.id %>/delete" method="post">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button class="button button-danger button-small" type="submit"><%= t("common.delete") %></button>
+                </form>
+              <% } else { %>
+                <span class="muted">Read only</span>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </article>
+</section>
+
+<%- include("../partials/dashboard-end") %>
