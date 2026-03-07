@@ -117,6 +117,8 @@ The repository now includes ready-to-use deployment helpers:
 - `scripts/deploy.sh` - basic Linux deployment helper
 - `scripts/backup.sh` - database and uploads backup helper
 - `scripts/reset-password.js` - secure CLI password reset helper
+- `scripts/post-deploy-check.sh` - post-deployment verification helper
+- `DEPLOY_ETHIO_TELECOM.md` - copy-paste deployment guide for your server
 
 ## Recommended deployment path on your server
 
