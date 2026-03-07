@@ -1,0 +1,18 @@
+[Unit]
+Description=Unified Operations, Reporting & Management System
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/uorms
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node /var/www/uorms/src/server.js
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/uorms/out.log
+StandardError=append:/var/log/uorms/error.log
+
+[Install]
+WantedBy=multi-user.target

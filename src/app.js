@@ -17,6 +17,7 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.set("trust proxy", env.trustProxy);
 
 app.use(
   helmet({
@@ -39,6 +40,15 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(loadCurrentUser);
 app.use(attachContext);
 app.use(verifyCsrf);
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: env.appName,
+    environment: env.nodeEnv,
+    timestamp: new Date().toISOString(),
+  });
+});
 
 app.use(publicRoutes);
 app.use(authRoutes);

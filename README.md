@@ -72,6 +72,22 @@ Change these credentials immediately before production use.
 
 The application runs on `http://localhost:3000` by default.
 
+## Health check
+
+Use this endpoint for reverse proxy or process monitoring checks:
+
+```bash
+curl http://127.0.0.1:3000/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "ok"
+}
+```
+
 ## Test
 
 ```bash
@@ -88,6 +104,92 @@ Before deploying to your own server:
 4. Back up the SQLite database regularly, or migrate to PostgreSQL/MySQL later if your server requires it
 5. Restrict file upload directory permissions appropriately
 6. Put the app behind Nginx or Apache as a reverse proxy
+7. Set `TRUST_PROXY=true` when running behind Nginx or Apache
+
+## Production deployment files included
+
+The repository now includes ready-to-use deployment helpers:
+
+- `deploy/nginx/uorms.conf` - Nginx reverse proxy sample
+- `deploy/systemd/uorms.service` - systemd service sample
+- `ecosystem.config.js` - PM2 process configuration
+- `scripts/deploy.sh` - basic Linux deployment helper
+- `scripts/backup.sh` - database and uploads backup helper
+
+## Recommended deployment path on your server
+
+### Option A: systemd + Nginx
+
+1. Install Node.js and Nginx
+2. Copy the project to `/var/www/uorms`
+3. Create `.env`
+4. Run:
+
+   ```bash
+   npm install --omit=dev
+   ```
+
+5. Copy:
+
+   - `deploy/systemd/uorms.service` to `/etc/systemd/system/uorms.service`
+   - `deploy/nginx/uorms.conf` to your Nginx sites config
+
+6. Edit the paths/domain values
+7. Enable and start:
+
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable uorms
+   sudo systemctl start uorms
+   sudo systemctl status uorms
+   ```
+
+8. Enable Nginx config and reload Nginx
+
+### Option B: PM2 + Nginx
+
+1. Install PM2 globally:
+
+   ```bash
+   npm install -g pm2
+   ```
+
+2. Start:
+
+   ```bash
+   pm2 start ecosystem.config.js
+   pm2 save
+   ```
+
+3. Put Nginx in front of it using `deploy/nginx/uorms.conf`
+
+## Example production `.env`
+
+```bash
+NODE_ENV=production
+PORT=3000
+BASE_URL=https://your-domain.example
+APP_SECRET=replace-this-with-a-long-random-secret
+COOKIE_NAME=uorms_session
+SESSION_TTL_DAYS=7
+DEFAULT_LOCALE=en
+TRUST_PROXY=true
+SECURE_COOKIES=true
+UPLOAD_DIR=src/public/uploads
+DATABASE_PATH=data/uorms.sqlite
+```
+
+## Basic production checklist
+
+- set the real domain name
+- enable HTTPS
+- set `APP_SECRET`
+- set `SECURE_COOKIES=true`
+- set `TRUST_PROXY=true`
+- change all seeded passwords
+- update organization settings in the dashboard
+- configure a cron job for `scripts/backup.sh`
+- verify `/health`
 
 ## Recommended self-hosted deployment shape
 

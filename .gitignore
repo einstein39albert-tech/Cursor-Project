@@ -5,3 +5,4 @@ src/public/uploads/*
 !src/public/uploads/.gitkeep
 coverage/
 npm-debug.log*
+dist/

@@ -18,6 +18,12 @@ test("public homepage loads", async () => {
   assert.match(response.text, /Unified Operations, Reporting &amp; Management System/);
 });
 
+test("health endpoint returns ok payload", async () => {
+  const response = await request(app).get("/health");
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.status, "ok");
+});
+
 test("protected dashboard redirects anonymous users to login", async () => {
   const response = await request(app).get("/dashboard");
   assert.equal(response.statusCode, 302);
